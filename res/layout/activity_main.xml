@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg" >
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/view_title" />
+
+    <LinearLayout
+        android:id="@+id/layout_computer_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_title"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" >
+
+        <Button
+            android:id="@+id/btn_computer_on"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_shape"
+            android:gravity="center"
+            android:text="电脑开"
+            android:textSize="@dimen/size_1"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_computer_off"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_shape"
+            android:gravity="center"
+            android:text="电脑关"
+            android:textSize="@dimen/size_1"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_wall_switch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_computer_switch"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp" >
+
+        <Button
+            android:id="@+id/btn_wall_on"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_shape"
+            android:gravity="center"
+            android:text="墙灯开"
+            android:textSize="@dimen/size_1"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_wall_off"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_shape"
+            android:gravity="center"
+            android:text="墙灯关"
+            android:textSize="@dimen/size_1"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</RelativeLayout>
