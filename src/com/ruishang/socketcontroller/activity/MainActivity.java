@@ -3,6 +3,7 @@ package com.ruishang.socketcontroller.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -11,10 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ruishang.socketcontroller.R;
+import com.ruishang.socketcontroller.util.Command;
+import com.ruishang.socketcontroller.util.SocketUtil;
 import com.ruishang.socketcontroller.util.UIUtil;
 
 public class MainActivity extends Activity implements OnClickListener {
 
+	private static final String TAG = "MainActivity";
 	private static final int SPACE_VALUE = 50;
 	private static final int NUM_COLUMNS = 2;
 	private int mWidth;
@@ -66,7 +70,9 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private void layoutButton(Button button) {
 		LayoutParams layoutParams = button.getLayoutParams();
-		layoutParams.width = (mWidth - UIUtil.dip2px(this, SPACE_VALUE) * (NUM_COLUMNS + 1)) / NUM_COLUMNS;
+		layoutParams.width = (mWidth - UIUtil.dip2px(this, SPACE_VALUE)
+				* (NUM_COLUMNS + 1))
+				/ NUM_COLUMNS;
 		layoutParams.height = layoutParams.width;
 		button.setLayoutParams(layoutParams);
 	}
@@ -75,25 +81,44 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View view) {
 		int id = view.getId();
 		switch (id) {
-			case R.id.btn_computer_on:
+		case R.id.btn_computer_on:
+			sendCommand(Command.COMMAND_COMPUTER_ON);
+			break;
+		case R.id.btn_computer_off:
+			sendCommand(Command.COMMAND_COMPUTER_OFF);
+			break;
+		case R.id.btn_wall_on:
+			sendCommand(Command.COMMAND_WALL_ON);
+			break;
+		case R.id.btn_wall_off:
+			sendCommand(Command.COMMAND_WALL_OFF);
+			break;
+		case R.id.title_with_back_title_btn_right:
 
-				break;
-			case R.id.btn_computer_off:
+			break;
 
-				break;
-			case R.id.btn_wall_on:
-
-				break;
-			case R.id.btn_wall_off:
-
-				break;
-			case R.id.title_with_back_title_btn_right:
-
-				break;
-
-			default:
-				break;
+		default:
+			break;
 		}
+	}
+
+	private void sendCommand(final byte[] command) {
+
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (SocketUtil.connect()) {
+					if (SocketUtil.sendCommand(command)) {
+						Log.d("aaa", "发送数据成功");
+					} else {
+						Log.d("aaa", "发送数据失败");
+					}
+				} else {
+					Log.d("aaa", "连接失败");
+				}
+			}
+		}).start();
 
 	}
 }
