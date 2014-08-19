@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.util.Log;
 
 /**
@@ -19,8 +21,12 @@ public class SocketUtil {
 	private static Socket mSocket;
 	private static OutputStream mOutputStream;
 
-	public static boolean connect() {
+	public static boolean connect(Context context) {
 		boolean isSuccess = false;
+		String ip = SharedPreferenceUtil.getStringValueByKey(context,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP);
+		int port = SharedPreferenceUtil.getIntegerValueByKey(context,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_PORT);
 		if (!isConnect()) {
 			try {
 				mSocket = new Socket("192.168.0.101", 9992);
@@ -38,7 +44,7 @@ public class SocketUtil {
 				e.printStackTrace();
 			}
 		}
-		Log.d("aaa", "soket连接：" + isSuccess);
+		Log.d("aaa", ip + ":" + port + " soket连接：" + isSuccess);
 		return isSuccess;
 	}
 
