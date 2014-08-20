@@ -60,13 +60,13 @@ public class MainActivity extends Activity implements OnClickListener {
 			}
 			switch (what) {
 				case STATUS_SEND_SUCCESS:
-					Toast.makeText(MainActivity.this, getString(R.string.send_success), Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, getString(R.string.send_success), Toast.LENGTH_SHORT).show();
 					break;
 				case STATUS_SEND_FAIL:
-					Toast.makeText(MainActivity.this, getString(R.string.send_fail), Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, getString(R.string.send_fail), Toast.LENGTH_SHORT).show();
 					break;
 				case STATUS_CONNECT_FAIL:
-					Toast.makeText(MainActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
+					Toast.makeText(MainActivity.this, getString(R.string.connect_fail), Toast.LENGTH_SHORT).show();
 					break;
 				default:
 					break;
@@ -81,8 +81,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		initVariables();
 		initView();
 		setListener();
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().
-				detectDiskWrites().detectNetwork().penaltyLog().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites()
+				.detectNetwork().penaltyLog().build());
 	}
 
 	private void showSettingPop() {
@@ -177,11 +177,11 @@ public class MainActivity extends Activity implements OnClickListener {
 		String ip = mEdtIp.getText().toString().trim();
 		String port = mEdtPort.getText().toString().trim();
 		if (StringUtil.isNullOrEmpty(ip)) {
-			Toast.makeText(this, getString(R.string.input_ip), Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.input_ip), Toast.LENGTH_SHORT).show();
 			return;
 		}
 		if (StringUtil.isNullOrEmpty(port)) {
-			Toast.makeText(this, getString(R.string.input_port), Toast.LENGTH_LONG).show();
+			Toast.makeText(this, getString(R.string.input_port), Toast.LENGTH_SHORT).show();
 			return;
 		}
 		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP, ip);
@@ -235,7 +235,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onBackPressed() {
-		if (mPopWindowUtil.isShowing()) {
+		if (null != mPopWindowUtil && mPopWindowUtil.isShowing()) {
 			mPopWindowUtil.dissmiss();
 			return;
 		}
