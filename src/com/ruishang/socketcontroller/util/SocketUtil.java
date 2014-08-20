@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import android.content.Context;
 import android.util.Log;
@@ -52,21 +53,22 @@ public class SocketUtil {
 		return null != mSocket && mSocket.isConnected();
 	}
 
-	public static boolean sendCommand(byte[] buffer) {
-		boolean isSuccess = false;
+	public static void sendCommand(Context context, String tag) throws IOException {
+		byte[] buffer = Command.getCommand(context, tag);
+		if (0 == buffer.length) {
+			return;
+		}
+		Log.d("aaa", Arrays.toString(buffer));
 		try {
 			if (null != mOutputStream) {
-				mOutputStream.write(buffer, 0, buffer.length);
+				mOutputStream.write(buffer);
 				mOutputStream.flush();
-				isSuccess = true;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;// 异常信息
 		} finally {
 			close();
 		}
-		Log.d(TAG, "发送数据：" + isSuccess);
-		return isSuccess;
 	}
 
 	public static void close() {

@@ -59,7 +59,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_shape"
             android:gravity="center"
-            android:text="墙灯开"
+            android:text="拼接墙开"
             android:textSize="@dimen/size_1"
             android:textStyle="bold" />
 
@@ -71,7 +71,7 @@
             android:layout_weight="1"
             android:background="@drawable/btn_shape"
             android:gravity="center"
-            android:text="墙灯关"
+            android:text="拼接墙关"
             android:textSize="@dimen/size_1"
             android:textStyle="bold" />
     </LinearLayout>

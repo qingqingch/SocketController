@@ -59,7 +59,7 @@ public class PopWindowUtil {
 
 			@Override
 			public void onClick(View arg0) {
-				mPopupWindow.dismiss();
+				// mPopupWindow.dismiss();
 			}
 		});
 	}

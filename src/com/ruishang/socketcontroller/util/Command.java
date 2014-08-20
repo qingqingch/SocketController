@@ -1,21 +1,42 @@
 package com.ruishang.socketcontroller.util;
 
+import java.util.HashMap;
+
+import android.content.Context;
+
 public class Command {
 
-	public static final byte[] COMMAND_COMPUTER_ON = new byte[] { (byte) 0xCA,
-			(byte) 0x20, (byte) 0x00, (byte) 0x18, (byte) 0x02, (byte) 0x01,
-			(byte) 0x01, (byte) 0xAC, };
+	public static HashMap<String, String> defaustCommand = new HashMap<String, String>();
+	static {
+		defaustCommand.put(ConstantSet.KEY_COMMAND_COMPUTER_ON, "CA  20  00  18  02  01  01  AC");
+		defaustCommand.put(ConstantSet.KEY_COMMAND_COMPUTER_OFF, "CA  20  00  18  02  01  00  AC");
+		defaustCommand.put(ConstantSet.KEY_COMMAND_WALL_ON, "CA  20  00  18  02  02  01  AC");
+		defaustCommand.put(ConstantSet.KEY_COMMAND_WALL_OFF, "CA  20  00  18  02  02  00  AC");
+	}
 
-	public static final byte[] COMMAND_COMPUTER_OFF = new byte[] { (byte) 0xCA,
-			(byte) 0x20, (byte) 0x00, (byte) 0x18, (byte) 0x02, (byte) 0x01,
-			(byte) 0x00, (byte) 0xAC, };
+	public static String getCommandString(Context context, String tag) {
+		String command = SharedPreferenceUtil.getStringValueByKey(context, ConstantSet.CONFIG_FILE_NAME, tag);
+		if (StringUtil.isNullOrEmpty(command)) {
+			command = defaustCommand.get(tag);
+		}
+		return command;
+	}
 
-	public static final byte[] COMMAND_WALL_ON = new byte[] { (byte) 0xCA,
-			(byte) 0x20, (byte) 0x00, (byte) 0x18, (byte) 0x02, (byte) 0x02,
-			(byte) 0x01, (byte) 0xAC, };
+	public static byte[] getCommand(Context context, String tag) {
+		if (StringUtil.isNullOrEmpty(tag)) {
+			return new byte[] {};
+		}
+		try {
+			String command = getCommandString(context, tag);
+			String[] array = command.split(" +");
+			byte[] commandArray = new byte[array.length];
+			for (int i = 0; i < array.length; i++) {
+				commandArray[i] = (byte) Integer.parseInt(array[i], 16);
+			}
+			return commandArray;
+		} catch (Exception e) {
+			return new byte[] {};
+		}
 
-	public static final byte[] COMMAND_WALL_OFF = new byte[] { (byte) 0xCA,
-			(byte) 0x20, (byte) 0x00, (byte) 0x18, (byte) 0x02, (byte) 0x02,
-			(byte) 0x00, (byte) 0xAC, };
-	
+	}
 }
