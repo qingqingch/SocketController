@@ -249,6 +249,29 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		}).start();
 	}
 
+	@Override
+	protected void onStart() {
+		if (checkIp()) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (!SocketUtil.connect(MainActivity.this)) {
+						sendToHandle(STATUS_CONNECT_FAIL, getString(R.string.connect_fail));
+					}
+				}
+			}).start();
+		}
+
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		SocketUtil.close();
+		super.onStop();
+	}
+
 	private void sendToHandle(int what, String info) {
 		Message msg = mHandler.obtainMessage();
 		msg.what = what;
@@ -340,7 +363,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			portString = port + "";
 		}
 		mEdtPort.setText(portString);
-		mEdtIp.setSelection(portString.length());
+		mEdtPort.setSelection(portString.length());
 
 		if (StringUtil.isNullOrEmpty(ipString)) {
 			mEdtIp.setText("");

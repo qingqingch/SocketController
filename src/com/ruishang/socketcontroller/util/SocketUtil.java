@@ -67,7 +67,7 @@ public class SocketUtil {
 		} catch (IOException e) {
 			throw e;// 异常信息
 		} finally {
-			close();
+			// close();
 		}
 	}
 
