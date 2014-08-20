@@ -3,13 +3,12 @@ package com.ruishang.socketcontroller.activity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.ruishang.socketcontroller.R;
-import com.ruishang.socketcontroller.R.layout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+
+import com.ruishang.socketcontroller.R;
 
 public class LoadingActivity extends Activity {
 

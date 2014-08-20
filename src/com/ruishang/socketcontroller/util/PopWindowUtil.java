@@ -28,8 +28,7 @@ public class PopWindowUtil {
 	 * @param view
 	 *            PopWindow相对位置的视图
 	 */
-	public PopWindowUtil(View mMenuView, View view,
-			OnPopDismissListener listener) {
+	public PopWindowUtil(View mMenuView, View view, OnPopDismissListener listener) {
 		this.mMenuView = mMenuView;
 		mView = view;
 		mListener = listener;
@@ -40,8 +39,7 @@ public class PopWindowUtil {
 	 * 初始化
 	 */
 	private void initView() {
-		mPopupWindow = new PopupWindow(mMenuView, LayoutParams.FILL_PARENT,
-				LayoutParams.FILL_PARENT);
+		mPopupWindow = new PopupWindow(mMenuView, LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 		mPopupWindow.setContentView(mMenuView);
 		mPopupWindow.setFocusable(true);
 		// 点击popupwindow窗口之外的区域popupwindow消失
@@ -81,12 +79,13 @@ public class PopWindowUtil {
 	}
 
 	public void dissmiss() {
-		if (null == mPopupWindow) {
-			return;
-		}
-		if (mPopupWindow.isShowing()) {
+		if (isShowing()) {
 			mPopupWindow.dismiss();
 		}
+	}
+
+	public boolean isShowing() {
+		return null != mPopupWindow && mPopupWindow.isShowing();
 	}
 
 }

@@ -6,30 +6,30 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.util.Log;
 
 /**
- * UI的帮助类
+ * Socket的帮助类
  * 
- * @author wang.xy<br>
+ * @author zoou.sq<br>
  * @version 2013-08-02 xu.xb 加入移动EditText光标的方法<br>
  * 
  */
 public class SocketUtil {
 
+	private static final String TAG = "SocketUtil";
 	private static Socket mSocket;
 	private static OutputStream mOutputStream;
 
 	public static boolean connect(Context context) {
 		boolean isSuccess = false;
-		String ip = SharedPreferenceUtil.getStringValueByKey(context,
-				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP);
-		int port = SharedPreferenceUtil.getIntegerValueByKey(context,
-				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_PORT);
+		String ip = SharedPreferenceUtil.getStringValueByKey(context, ConstantSet.CONFIG_FILE_NAME,
+				ConstantSet.KEY_CONFIG_IP);
+		int port = SharedPreferenceUtil.getIntegerValueByKey(context, ConstantSet.CONFIG_FILE_NAME,
+				ConstantSet.KEY_CONFIG_PORT);
 		if (!isConnect()) {
 			try {
-				mSocket = new Socket("192.168.0.101", 9992);
+				mSocket = new Socket(ip, port);
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -44,7 +44,7 @@ public class SocketUtil {
 				e.printStackTrace();
 			}
 		}
-		Log.d("aaa", ip + ":" + port + " soket连接：" + isSuccess);
+		Log.d(TAG, ip + ":" + port + " soket连接：" + isSuccess);
 		return isSuccess;
 	}
 
@@ -55,14 +55,17 @@ public class SocketUtil {
 	public static boolean sendCommand(byte[] buffer) {
 		boolean isSuccess = false;
 		try {
-			mOutputStream.write(buffer, 0, buffer.length);
-			mOutputStream.flush();
-			close();
-			isSuccess = true;
+			if (null != mOutputStream) {
+				mOutputStream.write(buffer, 0, buffer.length);
+				mOutputStream.flush();
+				isSuccess = true;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			close();
 		}
-		Log.d("aaa", "发送数据：" + isSuccess);
+		Log.d(TAG, "发送数据：" + isSuccess);
 		return isSuccess;
 	}
 
