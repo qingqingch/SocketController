@@ -30,7 +30,8 @@ import com.ruishang.socketcontroller.util.SocketUtil;
 import com.ruishang.socketcontroller.util.StringUtil;
 import com.ruishang.socketcontroller.util.UIUtil;
 
-public class MainActivity extends Activity implements OnClickListener, OnLongClickListener {
+public class MainActivity extends Activity implements OnClickListener,
+		OnLongClickListener {
 
 	private static final String TAG = "MainActivity";
 	private static final int SPACE_VALUE = 50;
@@ -57,6 +58,8 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	private long mTouchTime;
 	private LoadingUpView mLoadingUpView;
 	private String mCurrentTag;
+	private String[] mComputerOnArray;
+	private String[] mComputerOffArray;
 	private Handler mHandler = new Handler() {
 
 		@Override
@@ -68,26 +71,31 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			}
 			String info = (String) msg.obj;
 			switch (what) {
-				case STATUS_SEND_SUCCESS:
-					if (StringUtil.isNullOrEmpty(info)) {
-						info = getString(R.string.send_success);
-					}
-					Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT).show();
-					break;
-				case STATUS_SEND_FAIL:
-					if (StringUtil.isNullOrEmpty(info)) {
-						info = getString(R.string.send_fail);
-					}
-					Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT).show();
-					break;
-				case STATUS_CONNECT_FAIL:
-					if (StringUtil.isNullOrEmpty(info)) {
-						info = getString(R.string.connect_fail);
-					}
-					Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT).show();
-					break;
-				default:
-					break;
+			case STATUS_SEND_SUCCESS:
+				if (StringUtil.isNullOrEmpty(info)) {
+					info = getString(R.string.send_success);
+				}
+				Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT)
+						.show();
+				break;
+			case STATUS_SEND_FAIL:
+				SocketUtil.close();
+				if (StringUtil.isNullOrEmpty(info)) {
+					info = getString(R.string.send_fail);
+				}
+				Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT)
+						.show();
+				break;
+			case STATUS_CONNECT_FAIL:
+				SocketUtil.close();
+				if (StringUtil.isNullOrEmpty(info)) {
+					info = getString(R.string.connect_fail);
+				}
+				Toast.makeText(MainActivity.this, info, Toast.LENGTH_SHORT)
+						.show();
+				break;
+			default:
+				break;
 			}
 		}
 	};
@@ -99,26 +107,34 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		initVariables();
 		initView();
 		setListener();
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads().detectDiskWrites()
-				.detectNetwork().penaltyLog().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+				.detectDiskReads().detectDiskWrites().detectNetwork()
+				.penaltyLog().build());
 	}
 
 	private void initVariables() {
 		DisplayMetrics metric = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(metric);
 		mWidth = metric.widthPixels;
-		mLoadingUpView = new LoadingUpView(this);
+		mLoadingUpView = new LoadingUpView(this, true);
+		mComputerOnArray = getResources().getStringArray(
+				R.array.tag_computer_on);
+		mComputerOffArray = getResources().getStringArray(
+				R.array.tag_computer_off);
 	}
 
 	private void initView() {
-		mMenuView = LayoutInflater.from(this).inflate(R.layout.view_setting_pop, null);
-		mModifyView = LayoutInflater.from(this).inflate(R.layout.view_setting_command, null);
+		mMenuView = LayoutInflater.from(this).inflate(
+				R.layout.view_setting_pop, null);
+		mModifyView = LayoutInflater.from(this).inflate(
+				R.layout.view_setting_command, null);
 
 		mEdtIp = (EditText) mMenuView.findViewById(R.id.edt_ip);
 		mEdtPort = (EditText) mMenuView.findViewById(R.id.edt_port);
 		mBtnSave = (Button) mMenuView.findViewById(R.id.btn_save);
 
-		mBtnSaveCommand = (Button) mModifyView.findViewById(R.id.btn_save_command);
+		mBtnSaveCommand = (Button) mModifyView
+				.findViewById(R.id.btn_save_command);
 		mEdtCommand = (EditText) mModifyView.findViewById(R.id.edt_command);
 
 		TextView titleTextView = (TextView) findViewById(R.id.title_with_back_title_btn_mid);
@@ -158,7 +174,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 
 	private void layoutButton(Button button) {
 		LayoutParams layoutParams = button.getLayoutParams();
-		layoutParams.width = (mWidth - UIUtil.dip2px(this, SPACE_VALUE) * (NUM_COLUMNS + 1)) / NUM_COLUMNS;
+		layoutParams.width = (mWidth - UIUtil.dip2px(this, SPACE_VALUE)
+				* (NUM_COLUMNS + 1))
+				/ NUM_COLUMNS;
 		layoutParams.height = layoutParams.width;
 		button.setLayoutParams(layoutParams);
 	}
@@ -167,40 +185,46 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	public void onClick(View view) {
 		int id = view.getId();
 		switch (id) {
-			case R.id.btn_computer_on:
-				sendCommand(ConstantSet.KEY_COMMAND_COMPUTER_ON);
-				break;
-			case R.id.btn_computer_off:
-				sendCommand(ConstantSet.KEY_COMMAND_COMPUTER_OFF);
-				break;
-			case R.id.btn_wall_on:
-				sendCommand(ConstantSet.KEY_COMMAND_WALL_ON);
-				break;
-			case R.id.btn_wall_off:
-				sendCommand(ConstantSet.KEY_COMMAND_WALL_OFF);
-				break;
-			case R.id.btn_save:
-				checkIpAndPort();
-				break;
-			case R.id.btn_save_command:
-				saveCommand();
-				break;
-			case R.id.title_with_back_title_btn_right:
-				showSettingPop();
-				break;
+		case R.id.btn_computer_on:
+			sendCommand(mComputerOnArray);
+			break;
+		case R.id.btn_computer_off:
+			sendCommand(mComputerOffArray);
+			break;
+		case R.id.btn_wall_on:
+			byte[] bufferWallOn = Command.getCommand(MainActivity.this,
+					ConstantSet.KEY_COMMAND_WALL_ON);
+			sendCommand(bufferWallOn);
+			break;
+		case R.id.btn_wall_off:
+			byte[] bufferWallOff = Command.getCommand(MainActivity.this,
+					ConstantSet.KEY_COMMAND_WALL_OFF);
+			sendCommand(bufferWallOff);
+			break;
+		case R.id.btn_save:
+			checkIpAndPort();
+			break;
+		case R.id.btn_save_command:
+			saveCommand();
+			break;
+		case R.id.title_with_back_title_btn_right:
+			showSettingPop();
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 	}
 
 	private void saveCommand() {
 		String command = mEdtCommand.getText().toString().trim();
 		if (StringUtil.isNullOrEmpty(command)) {
-			Toast.makeText(this, getString(R.string.input_command), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.input_command),
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME, mCurrentTag, command);
+		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME,
+				mCurrentTag, command);
 		mModifyPopWindowUtil.dissmiss();
 
 	}
@@ -209,26 +233,29 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		String ip = mEdtIp.getText().toString().trim();
 		String port = mEdtPort.getText().toString().trim();
 		if (StringUtil.isNullOrEmpty(ip)) {
-			Toast.makeText(this, getString(R.string.input_ip), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.input_ip),
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 		if (StringUtil.isNullOrEmpty(port)) {
-			Toast.makeText(this, getString(R.string.input_port), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.input_port),
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
-		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP, ip);
-		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_PORT,
-				Integer.valueOf(port));
+		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME,
+				ConstantSet.KEY_CONFIG_IP, ip);
+		SharedPreferenceUtil.saveValue(this, ConstantSet.CONFIG_FILE_NAME,
+				ConstantSet.KEY_CONFIG_PORT, Integer.valueOf(port));
 		mPopWindowUtil.dissmiss();
 	}
 
-	private void sendCommand(final String tag) {
-		if (!checkIp()) {
+	private void sendCommand(final byte[] buffer) {
+		if (!hasIp()) {
 			showSettingPop();
 			return;
 		}
 		if (null != mLoadingUpView && !mLoadingUpView.isShowing()) {
-			mLoadingUpView.isShowing();
+			mLoadingUpView.showPopup();
 		}
 		new Thread(new Runnable() {
 
@@ -236,34 +263,56 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			public void run() {
 				if (SocketUtil.connect(MainActivity.this)) {
 					try {
-						SocketUtil.sendCommand(MainActivity.this, tag);
-						sendToHandle(STATUS_SEND_SUCCESS, getString(R.string.send_success));
+						SocketUtil.sendCommand(buffer);
+						sendToHandle(STATUS_SEND_SUCCESS,
+								getString(R.string.send_success));
 					} catch (IOException e) {
 						sendToHandle(STATUS_SEND_FAIL, e.toString());
 						e.printStackTrace();
 					}
 				} else {
-					sendToHandle(STATUS_CONNECT_FAIL, getString(R.string.connect_fail));
+					sendToHandle(STATUS_CONNECT_FAIL,
+							getString(R.string.connect_fail));
 				}
 			}
 		}).start();
 	}
 
-	@Override
-	protected void onStart() {
-		if (checkIp()) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					if (!SocketUtil.connect(MainActivity.this)) {
-						sendToHandle(STATUS_CONNECT_FAIL, getString(R.string.connect_fail));
-					}
-				}
-			}).start();
+	private void sendCommand(final String[] comands) {
+		if (!hasIp()) {
+			showSettingPop();
+			return;
 		}
+		if (null != mLoadingUpView && !mLoadingUpView.isShowing()) {
+			mLoadingUpView.showPopup();
+		}
+		new Thread(new Runnable() {
 
-		super.onStart();
+			@Override
+			public void run() {
+				if (SocketUtil.connect(MainActivity.this)) {
+					try {
+						for (int i = 0; i < comands.length; i++) {
+							byte[] buffer = Command.getCommand(comands[i]);
+							SocketUtil.sendCommand(buffer);
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						sendToHandle(STATUS_SEND_SUCCESS,
+								getString(R.string.send_success));
+					} catch (IOException e) {
+						sendToHandle(STATUS_SEND_FAIL, e.toString());
+						e.printStackTrace();
+					}
+				} else {
+					sendToHandle(STATUS_CONNECT_FAIL,
+							getString(R.string.connect_fail));
+				}
+			}
+		}).start();
 	}
 
 	@Override
@@ -279,13 +328,14 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		mHandler.sendMessage(msg);
 	}
 
-	private boolean checkIp() {
+	private boolean hasIp() {
 		boolean hasIp = false;
-		String ip = SharedPreferenceUtil.getStringValueByKey(this, ConstantSet.CONFIG_FILE_NAME,
-				ConstantSet.KEY_CONFIG_IP);
-		int port = SharedPreferenceUtil.getIntegerValueByKey(this, ConstantSet.CONFIG_FILE_NAME,
-				ConstantSet.KEY_CONFIG_PORT);
-		if (!StringUtil.isNullOrEmpty(ip) && SharedPreferenceUtil.INVALID_CODE != port) {
+		String ip = SharedPreferenceUtil.getStringValueByKey(this,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP);
+		int port = SharedPreferenceUtil.getIntegerValueByKey(this,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_PORT);
+		if (!StringUtil.isNullOrEmpty(ip)
+				&& SharedPreferenceUtil.INVALID_CODE != port) {
 			hasIp = true;
 		}
 		return hasIp;
@@ -299,7 +349,8 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		}
 		long currentTime = System.currentTimeMillis();
 		if ((currentTime - mTouchTime) >= WAIT_TIME) {
-			Toast.makeText(this, getString(R.string.once_press_quit), Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.once_press_quit),
+					Toast.LENGTH_SHORT).show();
 			mTouchTime = currentTime;
 			return;
 		} else {
@@ -313,29 +364,31 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		int id = view.getId();
 		String tag = (String) view.getTag();
 		switch (id) {
-			case R.id.btn_computer_on:
-			case R.id.btn_computer_off:
-			case R.id.btn_wall_on:
-			case R.id.btn_wall_off:
-				mCurrentTag = tag;
-				modifyCommand(tag);
-				break;
-			default:
-				break;
+		// case R.id.btn_computer_on:
+		// case R.id.btn_computer_off:
+		case R.id.btn_wall_on:
+		case R.id.btn_wall_off:
+			mCurrentTag = tag;
+			modifyCommand(tag);
+			break;
+		default:
+			break;
 		}
 		return true;
 	}
 
 	private void modifyCommand(String tag) {
 		if (null == mModifyPopWindowUtil) {
-			mModifyPopWindowUtil = new PopWindowUtil(mModifyView, mLlSetting, new OnPopDismissListener() {
+			mModifyPopWindowUtil = new PopWindowUtil(mModifyView, mLlSetting,
+					new OnPopDismissListener() {
 
-				@Override
-				public void onDismiss() {
-				}
-			});
+						@Override
+						public void onDismiss() {
+						}
+					});
 		}
-		String command = SharedPreferenceUtil.getStringValueByKey(this, ConstantSet.CONFIG_FILE_NAME, tag);
+		String command = SharedPreferenceUtil.getStringValueByKey(this,
+				ConstantSet.CONFIG_FILE_NAME, tag);
 		if (StringUtil.isNullOrEmpty(command)) {
 			command = Command.getCommandString(MainActivity.this, tag);
 		}
@@ -347,17 +400,18 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 
 	private void showSettingPop() {
 		if (null == mPopWindowUtil) {
-			mPopWindowUtil = new PopWindowUtil(mMenuView, mLlSetting, new OnPopDismissListener() {
+			mPopWindowUtil = new PopWindowUtil(mMenuView, mLlSetting,
+					new OnPopDismissListener() {
 
-				@Override
-				public void onDismiss() {
-				}
-			});
+						@Override
+						public void onDismiss() {
+						}
+					});
 		}
-		String ipString = SharedPreferenceUtil.getStringValueByKey(this, ConstantSet.CONFIG_FILE_NAME,
-				ConstantSet.KEY_CONFIG_IP);
-		int port = SharedPreferenceUtil.getIntegerValueByKey(this, ConstantSet.CONFIG_FILE_NAME,
-				ConstantSet.KEY_CONFIG_PORT);
+		String ipString = SharedPreferenceUtil.getStringValueByKey(this,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_IP);
+		int port = SharedPreferenceUtil.getIntegerValueByKey(this,
+				ConstantSet.CONFIG_FILE_NAME, ConstantSet.KEY_CONFIG_PORT);
 		String portString = "";
 		if (SharedPreferenceUtil.INVALID_CODE != port) {
 			portString = port + "";
@@ -372,7 +426,8 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			mEdtIp.setSelection(ipString.length());
 		}
 
-		mEdtPort.setText(SharedPreferenceUtil.INVALID_CODE == port ? "" : port + "");
+		mEdtPort.setText(SharedPreferenceUtil.INVALID_CODE == port ? "" : port
+				+ "");
 		mPopWindowUtil.changeStatus();
 	}
 

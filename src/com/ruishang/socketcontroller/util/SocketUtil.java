@@ -53,8 +53,7 @@ public class SocketUtil {
 		return null != mSocket && mSocket.isConnected();
 	}
 
-	public static void sendCommand(Context context, String tag) throws IOException {
-		byte[] buffer = Command.getCommand(context, tag);
+	public static void sendCommand(byte[] buffer) throws IOException {
 		if (0 == buffer.length) {
 			return;
 		}
