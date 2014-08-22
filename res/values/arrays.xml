@@ -1,28 +1,32 @@
 <resources>
 
     <string-array name="tag_computer_on">
-        <item>-54 32 0 24 2 1 1 4</item>
-        <item>-54 32 0 24 2 1 1 5</item>
-        <item>-54 32 0 24 2 1 1 6</item>
-        <item>-54 32 0 24 2 1 1 7</item>
-        <item>-54 32 0 24 2 1 1 8</item>
-        <item>-54 32 0 24 2 1 1 9</item>
-        <item>-54 32 0 24 2 1 1 0</item>
-        <item>-54 32 0 24 2 1 1 1</item>
-        <item>-54 32 0 24 2 1 1 2</item>
-        <item>-54 32 0 24 2 1 1 3</item>
+        <item>CA  20  00  18  02  01  01  AC</item>
+        <item>CA  20  00  18  02  02  01  AC</item>
+        <item>CA  20  00  18  02  03  01  AC</item>
+        <item>CA  20  00  18  02  04  01  AC</item>
+        <item>CA  20  00  18  02  05  01  AC</item>
+        <item>CA  20  00  18  02  06  01  AC</item>
+        <item>CA  20  00  18  02  07  01  AC</item>
+        <item>CA  20  00  18  02  08  01  AC</item>
+        <item>CA  20  00  18  02  09  01  AC</item>
+        <item>CA  20  00  18  02  0A  0A  AC</item>
+        <item>CA  20  00  18  02  0B  0B  AC</item>
+        <item>CA  20  00  18  02  0C  0C  AC</item>
     </string-array>
     <string-array name="tag_computer_off">
-        <item>-54 32 0 24 2 2 1 4</item>
-        <item>-54 32 0 24 2 2 1 5</item>
-        <item>-54 32 0 24 2 2 1 6</item>
-        <item>-54 32 0 24 2 2 1 7</item>
-        <item>-54 32 0 24 2 2 1 8</item>
-        <item>-54 32 0 24 2 2 1 9</item>
-        <item>-54 32 0 24 2 2 1 0</item>
-        <item>-54 32 0 24 2 2 1 1</item>
-        <item>-54 32 0 24 2 2 1 2</item>
-        <item>-54 32 0 24 2 2 1 3</item>
+        <item>CA  20  00  18  02  01  00  AC</item>
+        <item>CA  20  00  18  02  02  00  AC</item>
+        <item>CA  20  00  18  02  03  00  AC</item>
+        <item>CA  20  00  18  02  04  00  AC</item>
+        <item>CA  20  00  18  02  05  00  AC</item>
+        <item>CA  20  00  18  02  06  00  AC</item>
+        <item>CA  20  00  18  02  07  00  AC</item>
+        <item>CA  20  00  18  02  08  00  AC</item>
+        <item>CA  20  00  18  02  09  00  AC</item>
+        <item>CA  20  00  18  02  0A  00  AC</item>
+        <item>CA  20  00  18  02  0B  00  AC</item>
+        <item>CA  20  00  18  02  0C  00  AC</item>
     </string-array>
 
 </resources>
